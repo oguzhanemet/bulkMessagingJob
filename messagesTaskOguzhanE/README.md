@@ -18,9 +18,9 @@ Bu projenin çalışması için **PHP**, **Composer** ve **Redis** sunucusunun a
 
 Projeyi klonlayın ve Composer bağımlılıklarını kurun:
 
-```bash
+
 # GitHub'dan klonlayın
-git clone [REPOSITORY_URL] messages-service
+git clone [https://github.com/oguzhanemet/bulkMessagingJob] messages-service
 cd messages-service
 
 # PHP bağımlılıklarını kurun

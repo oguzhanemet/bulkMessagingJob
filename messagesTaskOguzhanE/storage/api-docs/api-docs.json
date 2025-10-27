@@ -1,0 +1,121 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Mesaj Gönderme Servisi API Dokümantasyonu",
+        "description": "Mesaj kuyruklama, gönderme ve takip işlemlerini gerçekleştirir.",
+        "contact": {
+            "email": "ornek@example.com"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/messages": {
+            "get": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Gönderilmiş mesajları listeler.",
+                "operationId": "4216f3eedb7be911361f1b91030253a8",
+                "responses": {
+                    "200": {
+                        "description": "Gönderilmiş mesajların listesi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "recipient": {
+                                                "type": "string"
+                                            },
+                                            "content": {
+                                                "type": "string"
+                                            },
+                                            "messageId": {
+                                                "description": "Harici SMS sisteminden dönen ID",
+                                                "type": "string"
+                                            },
+                                            "sent_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Mesaj gönderme isteği başlatır.",
+                "operationId": "c85a9171473a13f151a8672235e01559",
+                "requestBody": {
+                    "description": "Gönderilecek mesaj verileri",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "to",
+                                    "content"
+                                ],
+                                "properties": {
+                                    "to": {
+                                        "description": "Mesajın gönderileceği alıcı numarası",
+                                        "type": "string",
+                                        "example": "+905551112233"
+                                    },
+                                    "content": {
+                                        "description": "Mesaj içeriği",
+                                        "type": "string",
+                                        "example": "Merhaba, bu bir deneme mesajıdır."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Mesaj kuyruğa atılarak işlenmek üzere kabul edildi.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Accepted for processing"
+                                        },
+                                        "messageId": {
+                                            "type": "integer",
+                                            "example": "101"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Doğrulama hatası (Validation Error)."
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Messages",
+            "description": "Mesaj Gönderme ve Takip İşlemleri"
+        }
+    ]
+}

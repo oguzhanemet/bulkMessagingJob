@@ -26,7 +26,7 @@ class MessageSeeder extends Seeder
         ]);
 
         
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < 8; $i++) {
             Message::create([
                 'recipient' => '+9055500000' . $i,
                 'content' => 'Toplu gönderim testi #' . ($i + 3),

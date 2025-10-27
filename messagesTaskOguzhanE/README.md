@@ -20,8 +20,8 @@ Projeyi klonlayın ve Composer bağımlılıklarını kurun:
 
 
 # GitHub'dan klonlayın
-git clone [https://github.com/oguzhanemet/bulkMessagingJob] messages-service
-cd messages-service
+git clone https://github.com/oguzhanemet/bulkMessagingJob.git
+cd bulkMessagingJob/messagesTaskOguzhanE
 
 # PHP bağımlılıklarını kurun
 composer install

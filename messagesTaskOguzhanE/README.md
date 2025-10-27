@@ -62,16 +62,20 @@ Terminal 1: Laravel Web Sunucusu
 php artisan serve
 (API isteklerini karşılayacak)
 
-Terminal 2: Kuyruk İşçisi (Queue Worker)
+Terminal 2: MessageSeed (SQLite Veri Ekleme ve Dispatch)
+php artisan db:seed --class=MessageSeeder yaptıktan sonra içeride belirleren miktarda veri SQLite veritabanına eklenir.
+php artisan messages:dispatch  komutu ile bu veriler Queue'ye gönderilir.
+
+Terminal 3: Kuyruk İşçisi (Queue Worker)
 Bu, Redis kuyruğundaki mesajları çekecek ve harici Webhook'a isteği atacaktır.
 
 php artisan queue:work
 (Asenkron gönderme işlemini yapacak. Bu olmadan mesajlar gönderilmez.)
 
-Terminal 3: Scheduler (Planlanmış Görevler)
-(Opsiyonel olarak, eğer cron job tanımlanmışsa)
+5 saniyede 2 mesaj gönderilme isteği dakikada 24 mesaj gönderilme isteği olarak düzenlendi.
 
-php artisan schedule:run
+WebHook paneline belirtilen isteklerde veriler eklenecek. 
+
 
 📡 API Kullanımı
 API'ye erişim http://localhost:8000/api/ üzerinden sağlanır.
@@ -88,4 +92,5 @@ Adres: http://localhost:8000/api/documentation
 | :--- | :--- | :--- |
 | `GET` | `/api/messages` | Durumu `sent` olan mesajları listeler. |
 
+Adres: http://localhost:8000/api/messages
 

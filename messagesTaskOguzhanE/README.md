@@ -80,6 +80,7 @@ Kuyruğa Gönderme (Dispatch): Eklenen bu verileri işlenmek üzere Redis Kuyru�
 
 
 php artisan messages:dispatch
+
 🔴 Terminal 3: Kuyruk İşçisi (Queue Worker)
 Bu, Redis kuyruğundaki mesajları çekecek ve Rate Limiting kurallarına uyarak harici Webhook'a isteği atacaktır.
 

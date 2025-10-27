@@ -76,6 +76,20 @@ php artisan queue:work
 
 WebHook paneline belirtilen isteklerde veriler eklenecek. 
 
+Tekrar denemek için php artisan migrate:fresh --seed yaparak temiz başlangıç yapılabilir.
+
+Gönderilen (sent) mesajları tekrar göndermeme işlemi:
+
+Veritabanımızda status sütunu sent olmayan veri ekleyip test etmek için:
+php artisan tinker         
+                                               
+App\Models\Message::create(['recipient' => '+905559999999', 'content' => 'Yeni Test Mesajı 1', 'status' => 'pending']);
+
+App\Models\Message::create(['recipient' => '+905558888888', 'content' => 'Yeni Test Mesajı 2', 'status' => 'pending']);
+exit
+
+Yaparak yeni veri ekleyip tekrar php artisan queue:work çalıştırıldığı zaman sadece sent olmayan verilerin gittiği görülecektir.
+
 
 📡 API Kullanımı
 API'ye erişim http://localhost:8000/api/ üzerinden sağlanır.

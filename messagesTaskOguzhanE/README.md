@@ -53,11 +53,13 @@ SQLite kullanıldığı için boş bir veritabanı dosyası oluşturulmalıdır:
 
 
 touch database/database.sqlite
+
 b) Migrationları Çalıştırma
 Mesajlar tablosunu oluşturun. (Lütfen messagesTaskOguzhanE dizini içinde olduğunuzdan emin olun):
 
 
 php artisan migrate
+
 c) Redis Sunucusunu Başlatma
 Yerel Redis sunucunuzun arka planda çalıştığından emin olun (Örn: Docker veya Redis Desktop Manager kullanarak). Redis, kuyruk ve Rate Limiting için gereklidir.
 
@@ -69,6 +71,7 @@ API isteklerini karşılayacak ana sunucuyu başlatır:
 
 
 php artisan serve
+
 🟡 Terminal 2: Veri Ekleme ve Kuyruğa Gönderme (Seed/Dispatch)
 Bu terminal, başlangıç verilerini SQLite veritabanına eklemek ve bu verileri kuyruğa atmak için kullanılır.
 
@@ -76,6 +79,7 @@ Veri Ekleme (Seeding): İçeride belirtilen miktarda veriyi SQLite veritabanına
 
 
 php artisan db:seed --class=MessageSeeder
+
 Kuyruğa Gönderme (Dispatch): Eklenen bu verileri işlenmek üzere Redis Kuyruğu'na gönderir.
 
 
@@ -86,6 +90,7 @@ Bu, Redis kuyruğundaki mesajları çekecek ve Rate Limiting kurallarına uyarak
 
 
 php artisan queue:work
+
 (UYARI: Bu komut çalışmadan mesajlar gönderilmez ve WebHook'a ulaşmaz.)
 
 ⚙️ Ek İşlemler ve Notlar

@@ -40,55 +40,76 @@ cp .env.example .env
 | `WEBHOOK_SITE_URL` | `[Sizin Webhook URL'niz]` | Mesajın gönderileceği harici API adresi |
 | `WEBHOOK_API_KEY` | `[Sizin Auth Key'iniz]` | `x-ins-auth-key` başlığı için kullanılan kimlik anahtarı |
 
-3. Veritabanı ve Redis Kurulumu
-a) SQLite Veritabanı Oluşturma
+
+## 🛠️ Kurulum ve Çalıştırma (Devam)
+
+### 3. Veritabanı ve Redis Kurulumu
+
+Bu adımlar, projenin veritabanını hazırlar ve Redis kuyruk bağlantısını kurar.
+
+#### a) SQLite Veritabanı Oluşturma
+
 SQLite kullanıldığı için boş bir veritabanı dosyası oluşturulmalıdır:
 
-touch database/database.sqlite
 
+touch database/database.sqlite
 b) Migrationları Çalıştırma
-Mesajlar tablosunu oluşturun:
+Mesajlar tablosunu oluşturun. (Lütfen messagesTaskOguzhanE dizini içinde olduğunuzdan emin olun):
+
 
 php artisan migrate
-
 c) Redis Sunucusunu Başlatma
-Yerel Redis sunucunuzun arka planda çalıştığından emin olun (Örn: Docker veya Redis Desktop Manager kullanarak).
+Yerel Redis sunucunuzun arka planda çalıştığından emin olun (Örn: Docker veya Redis Desktop Manager kullanarak). Redis, kuyruk ve Rate Limiting için gereklidir.
 
 4. Uygulamayı Başlatma
-Projenin tam olarak çalışması için 3 ayrı terminal penceresi açılması gerekir:
+Projenin tam olarak çalışması ve mesaj gönderiminin gerçekleşmesi için 3 ayrı terminal penceresi açılması gerekir:
 
-Terminal 1: Laravel Web Sunucusu
+🟢 Terminal 1: Laravel Web Sunucusu
+API isteklerini karşılayacak ana sunucuyu başlatır:
+
 
 php artisan serve
-(API isteklerini karşılayacak)
+🟡 Terminal 2: Veri Ekleme ve Kuyruğa Gönderme (Seed/Dispatch)
+Bu terminal, başlangıç verilerini SQLite veritabanına eklemek ve bu verileri kuyruğa atmak için kullanılır.
 
-Terminal 2: MessageSeed (SQLite Veri Ekleme ve Dispatch)
-php artisan db:seed --class=MessageSeeder yaptıktan sonra içeride belirleren miktarda veri SQLite veritabanına eklenir.
-php artisan messages:dispatch  komutu ile bu veriler Queue'ye gönderilir.
+Veri Ekleme (Seeding): İçeride belirtilen miktarda veriyi SQLite veritabanına ekler.
 
-Terminal 3: Kuyruk İşçisi (Queue Worker)
-Bu, Redis kuyruğundaki mesajları çekecek ve harici Webhook'a isteği atacaktır.
+
+php artisan db:seed --class=MessageSeeder
+Kuyruğa Gönderme (Dispatch): Eklenen bu verileri işlenmek üzere Redis Kuyruğu'na gönderir.
+
+
+php artisan messages:dispatch
+🔴 Terminal 3: Kuyruk İşçisi (Queue Worker)
+Bu, Redis kuyruğundaki mesajları çekecek ve Rate Limiting kurallarına uyarak harici Webhook'a isteği atacaktır.
+
 
 php artisan queue:work
-(Asenkron gönderme işlemini yapacak. Bu olmadan mesajlar gönderilmez.)
+(UYARI: Bu komut çalışmadan mesajlar gönderilmez ve WebHook'a ulaşmaz.)
 
-5 saniyede 2 mesaj gönderilme isteği dakikada 24 mesaj gönderilme isteği olarak düzenlendi.
+⚙️ Ek İşlemler ve Notlar
+Hız Sınırlama (Rate Limiting) Ayarı
+Proje, 5 saniyede 2 mesaj gönderilme isteğini karşılamak üzere dakikada 24 mesaj gönderilme isteği olarak düzenlenmiştir (AppServiceProvider içinde tanımlanmıştır).
 
-WebHook paneline belirtilen isteklerde veriler eklenecek. 
+WebHook Kontrolü
+Webhook paneline (Curl örneğinde belirtilen formatta) başarılı (202 Accepted) istekler ve veriler eklenecektir.
 
-Tekrar denemek için php artisan migrate:fresh --seed yaparak temiz başlangıç yapılabilir.
+Temiz Başlangıç
+Tüm veritabanı tablolarını silip migrationları yeniden çalıştırmak ve seeder verilerini tekrar eklemek için:
 
-Gönderilen (sent) mesajları tekrar göndermeme işlemi:
 
-Veritabanımızda status sütunu sent olmayan veri ekleyip test etmek için:
-php artisan tinker         
-                                               
-App\Models\Message::create(['recipient' => '+905559999999', 'content' => 'Yeni Test Mesajı 1', 'status' => 'pending']);
+php artisan migrate:fresh --seed
+Gönderilmiş Mesajları Tekrar Göndermeme (Status Kontrolü)
+Sistem, sadece veritabanında status sütunu pending olan mesajları gönderir. sent olanlar göz ardı edilir.
 
-App\Models\Message::create(['recipient' => '+905558888888', 'content' => 'Yeni Test Mesajı 2', 'status' => 'pending']);
-exit
+Manuel Test Verisi Ekleme: Gönderilmeyi bekleyen yeni veriler ekleyip queue:work ile test etmek için tinker kullanabilirsiniz:
 
-Yaparak yeni veri ekleyip tekrar php artisan queue:work çalıştırıldığı zaman sadece sent olmayan verilerin gittiği görülecektir.
+
+php artisan tinker
+>>> App\Models\Message::create(['recipient' => '+905559999999', 'content' => 'Yeni Test Mesajı 1', 'status' => 'pending']);
+>>> App\Models\Message::create(['recipient' => '+905558888888', 'content' => 'Yeni Test Mesajı 2', 'status' => 'pending']);
+>>> exit
+Yeni veriler eklendikten sonra php artisan queue:work tekrar çalıştırıldığı zaman, sadece yeni eklenen (pending) verilerin işlendiği görülecektir.
 
 
 📡 API Kullanımı

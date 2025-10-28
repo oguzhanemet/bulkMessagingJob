@@ -29,6 +29,10 @@ composer install
 2. Çevre Değişkenleri (Environment)
 .env dosyasını oluşturun ve temel konfigürasyonları yapın:
 
+APP_ENV=local yaptıktan sonra hala application in production derse force kullanılabilir.
+
+Örnek : php artisan migrate:fresh --seed --force
+
 cp .env.example .env
 
 .env dosyanızı açın ve aşağıdaki temel ayarların yapıldığından emin olun:

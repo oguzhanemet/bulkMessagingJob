@@ -135,3 +135,13 @@ Adres: http://localhost:8000/api/documentation
 
 Adres: http://localhost:8000/api/messages
 
+⚙️ Testler (Testing)
+Proje, hem Unit hem de Integration testleri içermektedir. Testleri çalıştırmak için aşağıdaki komutu kullanabilirsiniz:
+
+
+
+php artisan test
+
+Unit Testler: Repository ve Service katmanlarındaki iş mantığını bağımsız olarak doğrular.
+
+Integration Testler: Queue/Job yapısının, Command'ın ve API uç noktasının (end-point) veritabanı ve harici servislerle (mocked/sahte) doğru entegrasyonunu kontrol eder.
